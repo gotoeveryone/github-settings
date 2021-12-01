@@ -1,0 +1,34 @@
+name: test
+
+on: push
+
+jobs:
+  # 成功するジョブ
+  test_success:
+    runs-on: ubuntu-latest
+    steps:
+      - name: test
+        run: exit 0
+  # 失敗するジョブ
+  test_failed:
+    runs-on: ubuntu-latest
+    steps:
+      - name: test
+        run: exit 1
+  notify:
+    if: ${{ always() }} # 前のジョブが失敗した場合でも発火させたいので always() としている
+    needs:
+      - test_success
+      - test_failed
+    runs-on: ubuntu-latest
+    steps:
+      - uses: technote-space/workflow-conclusion-action@v1
+      - name: Notify to Slack
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ env.WORKFLOW_CONCLUSION }} # 最終ステータス（複数ジョブが実行されていた場合、1件でもキャンセルや失敗したジョブがあればそれが採用される）
+          author_name: GitHub Actions
+          fields: message,ref # 必要なフィールド
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # GitHub のトークンを設定
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # Slack の Webhook URL
