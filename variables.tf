@@ -1,2 +1,2 @@
-variable "repository" {}
-variable "by_terraform_secret" {}
+variable "repository" { default = "github-settings" }
+variable "test_secret_value" { default = null }
