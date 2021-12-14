@@ -10,6 +10,11 @@ resource "github_branch_protection" "main" {
     contexts = ["Terraform"]
   }
 
+  required_status_checks {
+    strict   = false
+    contexts = ["Terraform"]
+  }
+
   required_pull_request_reviews {
     required_approving_review_count = 1
   }
