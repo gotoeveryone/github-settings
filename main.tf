@@ -20,8 +20,8 @@ terraform {
 
 provider "github" {}
 
-resource "github_actions_secret" "test_secret" {
-  repository       = var.repository
-  secret_name      = "BY_TERRAFORM"
-  plaintext_value  = var.by_terraform_secret
+module "settings" {
+  repository = var.repository
+  by_terraform_secret = var.by_terraform_secret
+  source = "./modules"
 }
